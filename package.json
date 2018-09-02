@@ -1,0 +1,36 @@
+{
+    "name": "deadlockjs-lightorm",
+    "version": "0.0.2",
+    "description": "Light ORM for deadlock.js",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
+    "scripts": {
+        "clean": "rm -rf ./dist/*",
+        "build": "npm run clean; tsc;",
+        "test": "npm run build; mocha dist/test/test.js",
+        "test-manual": "npm run build; node dist/test/test-manual.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/7PH/deadlock.js.git"
+    },
+    "keywords": [
+        "node",
+        "express",
+        "framework",
+        "api",
+        "rest",
+        "security"
+    ],
+    "author": "Benjamin Raymond <b.raymond@protonmail.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/7PH/deadlock.js/issues"
+    },
+    "homepage": "https://github.com/7PH/deadlock.js#readme",
+    "dependencies": {
+        "reflect-metadata": "^0.1.12"
+    },
+    "devDependencies": {
+    }
+}

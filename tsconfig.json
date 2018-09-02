@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "declaration": true,
+        "outDir": "./dist/",
+        "target": "es6",
+        "experimentalDecorators": true
+    },
+    "include": [
+        "src/**/*",
+        "test/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
