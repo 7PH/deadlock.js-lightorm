@@ -1,5 +1,5 @@
 import {ClassMeta} from "./metadata/class";
-import {EXPORT_KEY} from "./decorator/Export";
+import {EXPORT_KEY} from "./decorator";
 
 export class Exporter {
 
@@ -7,7 +7,7 @@ export class Exporter {
 
         let metadata: any = Reflect.getMetadata(EXPORT_KEY, obj.constructor);
         if (! metadata || ! (metadata instanceof ClassMeta))
-            throw new Error("Unable to export non-serialy object");
+            throw new Error("Unable to export non-decorated object");
 
         if (! metadata.hasClassDecorator)
             throw new Error("The class decorator is missing on " + obj.constructor);
@@ -38,9 +38,9 @@ export class Exporter {
 
         let rawObject: Object = typeof data === 'string' ? JSON.parse(data) : data;
 
-        let metadata: ClassMeta | undefined = ClassMeta.initClassMeta(Obj);
+        let metadata: ClassMeta | undefined = ClassMeta.getClassMeta(Obj);
 
-        if (! metadata.hasClassDecorator)
+        if (! metadata || ! metadata.hasClassDecorator)
             throw new Error("The class decorator is missing on " + Obj);
 
         let importedValues: any = {};
@@ -58,4 +58,15 @@ export class Exporter {
         return Object.assign(new Obj(), importedValues);
     }
 
+    public static replacer(key: string, value: any) {
+
+        if (typeof value !== 'object')
+            return value;
+
+        let meta = ClassMeta.getClassMeta(value.constructor);
+        if (typeof meta !== 'undefined')
+            return Exporter.export(value);
+
+        return value;
+    }
 }

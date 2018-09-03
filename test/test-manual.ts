@@ -1,5 +1,6 @@
 import {Column, Table} from "../src/lightorm/decorator";
 import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator";
+import {Exporter} from "../src/export/Exporter";
 
 @Table('users') @Serializable()
 class User {
@@ -22,3 +23,16 @@ class User {
     )
     public card!: string;
 }
+
+let u = new User();
+u.id = 12;
+u.email = 'foo@bar.fr';
+u.password = 'prout';
+u.addedDate = new Date();
+u.card = '0000 0000 0000 0000';
+let d = [u];
+
+let stringified = JSON.stringify(d);
+let exported = JSON.stringify(d, Exporter.replacer);
+console.log(stringified);
+console.log(exported);

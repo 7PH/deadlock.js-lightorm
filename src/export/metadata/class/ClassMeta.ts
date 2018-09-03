@@ -1,5 +1,6 @@
 import {PropertyMeta} from "../property";
 import {EXPORT_KEY} from "../../decorator";
+import {LIGHTORM_KEY} from "../../../lightorm/decorator";
 
 export class ClassMeta {
 
@@ -26,6 +27,11 @@ export class ClassMeta {
             Reflect.defineMetadata(EXPORT_KEY, meta, target);
             return meta;
         }
+    }
+
+    public static getClassMeta(target: any): ClassMeta | undefined {
+
+        return Reflect.getMetadata(EXPORT_KEY, target);
     }
 
     public hasClassDecorator: boolean = false;

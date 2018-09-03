@@ -11,7 +11,7 @@ import {
 
 export class Export {
 
-    public static readonly KEY: string = 'serialy:meta';
+    public static readonly KEY: string = 'export:meta';
 
     public static Serializable() {
         return function decorator(constructor: any): void {
