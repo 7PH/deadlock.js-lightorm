@@ -2,6 +2,9 @@
 
 export class ColumnMeta {
 
+    // @TODO
+    public primary: boolean = false;
+
     public prop: string;
 
     public column: string;

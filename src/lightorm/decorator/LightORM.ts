@@ -18,8 +18,8 @@ export class LightORM {
     public static Column(name?: string) {
         return function decorator(instance: any, prop: string): void {
 
-            const classMeta = TableMeta.initTableMeta(instance.constructor);
-            classMeta.columns.push(new ColumnMeta(prop, name || prop));
+            const tableMeta = TableMeta.initTableMeta(instance.constructor);
+            tableMeta.columns.push(new ColumnMeta(prop, name || prop));
         }
     }
 }

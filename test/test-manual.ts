@@ -1,5 +1,5 @@
-import {Column, LIGHTORM_KEY, Table} from "../src/lightorm/decorator/LightORM";
-import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator/Export";
+import {Column, Table} from "../src/lightorm/decorator";
+import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator";
 
 @Table('users') @Serializable()
 class User {
@@ -22,6 +22,3 @@ class User {
     )
     public card!: string;
 }
-
-
-console.log(Reflect.getMetadata(LIGHTORM_KEY, User).getAllColumns());

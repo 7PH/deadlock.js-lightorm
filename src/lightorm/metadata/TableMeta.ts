@@ -23,6 +23,11 @@ export class TableMeta {
         }
     }
 
+    public static getTableMeta(target: any): TableMeta | undefined {
+
+        return Reflect.getMetadata(LIGHTORM_KEY, target);
+    }
+
     public table: string = '';
 
     public columns: ColumnMeta[] = [];

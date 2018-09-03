@@ -1,5 +1,5 @@
 import {PropertyMeta} from "../property";
-import {LIGHTORM_KEY} from "../../../lightorm/decorator";
+import {EXPORT_KEY} from "../../decorator";
 
 export class ClassMeta {
 
@@ -10,20 +10,20 @@ export class ClassMeta {
      */
     public static initClassMeta(target: any): ClassMeta {
 
-        if (Reflect.hasOwnMetadata(LIGHTORM_KEY, target)) {
+        if (Reflect.hasOwnMetadata(EXPORT_KEY, target)) {
             // metadata is already present on this object
-            return Reflect.getOwnMetadata(LIGHTORM_KEY, target);
+            return Reflect.getOwnMetadata(EXPORT_KEY, target);
 
-        } else if (Reflect.hasMetadata(LIGHTORM_KEY, target)) {
+        } else if (Reflect.hasMetadata(EXPORT_KEY, target)) {
             // metadata is present in superclass
-            let meta = new ClassMeta(Reflect.getMetadata(LIGHTORM_KEY, target));
-            Reflect.defineMetadata(LIGHTORM_KEY, meta, target);
+            let meta = new ClassMeta(Reflect.getMetadata(EXPORT_KEY, target));
+            Reflect.defineMetadata(EXPORT_KEY, meta, target);
             return meta;
 
         } else {
             // metadata is not present there or in any superclass
             let meta = new ClassMeta();
-            Reflect.defineMetadata(LIGHTORM_KEY, meta, target);
+            Reflect.defineMetadata(EXPORT_KEY, meta, target);
             return meta;
         }
     }
