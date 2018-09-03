@@ -1,14 +1,14 @@
 {
     "name": "deadlockjs-lightorm",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "description": "Light ORM for deadlock.js",
-    "main": "./dist/src/index.js",
-    "types": "./dist/src/index.d.ts",
+    "main": "./build/src/index.js",
+    "types": "./build/src/index.d.ts",
     "scripts": {
-        "clean": "rm -rf ./dist/*",
+        "clean": "rm -rf ./build/*",
         "build": "npm run clean; tsc;",
-        "test": "npm run build; mocha dist/test/test.js",
-        "test-manual": "npm run build; node dist/test/test-manual.js"
+        "test": "npm run build; mocha build/test/test.js",
+        "test-manual": "npm run build; node build/test/test-manual.js"
     },
     "repository": {
         "type": "git",

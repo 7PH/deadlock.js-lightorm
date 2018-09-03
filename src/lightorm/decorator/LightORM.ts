@@ -1,11 +1,11 @@
 import "reflect-metadata";
-import {TableMeta} from "../metadata/TableMeta";
-import {ColumnMeta} from "../metadata/ColumnMeta";
+import {TableMeta} from "../metadata";
+import {ColumnMeta} from "../metadata";
 
 
 export class LightORM {
 
-    public static readonly KEY: string = 'lightorm:meta';
+    public static readonly LIGHTORM_KEY: string = 'lightorm:meta';
 
     public static Table(name?: string) {
         return function decorator(constructor: any): void {
@@ -24,6 +24,6 @@ export class LightORM {
     }
 }
 
-export const KEY = LightORM.KEY;
+export const LIGHTORM_KEY = LightORM.LIGHTORM_KEY;
 export const Table = LightORM.Table;
 export const Column = LightORM.Column;

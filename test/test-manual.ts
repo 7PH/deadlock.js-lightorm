@@ -1,5 +1,5 @@
-import {Column, KEY, Table} from "../src/lightorm/decorator/LightORM";
-import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator";
+import {Column, LIGHTORM_KEY, Table} from "../src/lightorm/decorator/LightORM";
+import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator/Export";
 
 @Table('users') @Serializable()
 class User {
@@ -24,4 +24,4 @@ class User {
 }
 
 
-console.log(Reflect.getMetadata(KEY, User).getAllColumns());
+console.log(Reflect.getMetadata(LIGHTORM_KEY, User).getAllColumns());

@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "removeComments": true,
         "declaration": true,
-        "outDir": "./dist/",
+        "outDir": "./build/",
         "target": "es6",
         "experimentalDecorators": true
     },
@@ -15,6 +15,6 @@
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "build"
     ]
 }

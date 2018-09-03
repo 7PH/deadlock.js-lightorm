@@ -1,24 +1,24 @@
-import {KEY} from "../decorator/LightORM";
+import {LIGHTORM_KEY} from "../decorator";
 import {ColumnMeta} from "./ColumnMeta";
 
 export class TableMeta {
 
     public static initTableMeta(target: any): TableMeta {
 
-        if (Reflect.hasOwnMetadata(KEY, target)) {
+        if (Reflect.hasOwnMetadata(LIGHTORM_KEY, target)) {
             // metadata is already present on this object
-            return Reflect.getOwnMetadata(KEY, target);
+            return Reflect.getOwnMetadata(LIGHTORM_KEY, target);
 
-        } else if (Reflect.hasMetadata(KEY, target)) {
+        } else if (Reflect.hasMetadata(LIGHTORM_KEY, target)) {
             // metadata is present in superclass
-            let meta = new TableMeta(Reflect.getMetadata(KEY, target));
-            Reflect.defineMetadata(KEY, meta, target);
+            let meta = new TableMeta(Reflect.getMetadata(LIGHTORM_KEY, target));
+            Reflect.defineMetadata(LIGHTORM_KEY, meta, target);
             return meta;
 
         } else {
             // metadata is not present there or in any superclass
             let meta = new TableMeta();
-            Reflect.defineMetadata(KEY, meta, target);
+            Reflect.defineMetadata(LIGHTORM_KEY, meta, target);
             return meta;
         }
     }

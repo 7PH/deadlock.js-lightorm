@@ -1,11 +1,11 @@
-import {ClassMeta} from "./metadata/class/ClassMeta";
-import {KEY} from "./decorator";
+import {ClassMeta} from "./metadata/class";
+import {EXPORT_KEY} from "./decorator/Export";
 
 export class Exporter {
 
     public static export(obj: any): any {
 
-        let metadata: any = Reflect.getMetadata(KEY, obj.constructor);
+        let metadata: any = Reflect.getMetadata(EXPORT_KEY, obj.constructor);
         if (! metadata || ! (metadata instanceof ClassMeta))
             throw new Error("Unable to export non-serialy object");
 
