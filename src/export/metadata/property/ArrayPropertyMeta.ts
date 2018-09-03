@@ -3,8 +3,6 @@ import {Exporter} from "../../Exporter";
 
 export class ArrayPropertyMeta<T> extends PropertyMeta<T[], any[]> {
 
-    public readonly type = "array";
-
     private Obj: { new(): T };
 
     constructor(prop: string, Obj: new() => T) {

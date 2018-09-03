@@ -2,8 +2,6 @@ import {PropertyMeta} from "./PropertyMeta";
 
 export class CustomPropertyMeta<U, T> extends PropertyMeta<U, T> {
 
-    public readonly type = "custom";
-
     private exportFun: (value: U) => T;
 
     private importFun: (value: T) => U;

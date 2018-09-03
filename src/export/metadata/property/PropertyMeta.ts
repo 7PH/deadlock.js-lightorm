@@ -1,8 +1,6 @@
 
 export abstract class PropertyMeta<U, T> {
 
-    public readonly abstract type: 'array' | 'primitive' | 'date' | 'custom' | 'class';
-
     public readonly prop: string;
 
     constructor(prop: string) {

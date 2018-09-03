@@ -3,8 +3,6 @@ import {Exporter} from "../../Exporter";
 
 export class ClassPropertyMeta<T> extends PropertyMeta<T, any> {
 
-    public readonly type = "class";
-
     private Obj: { new(): T };
 
     constructor(prop: string, Obj: new () => T) {
