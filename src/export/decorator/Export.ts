@@ -13,7 +13,7 @@ export class Export {
 
     public static readonly KEY: string = 'export:meta';
 
-    public static Serializable() {
+    public static Exportable() {
         return function decorator(constructor: any): void {
 
             const classMeta = ClassMeta.initClassMeta(constructor);
@@ -64,7 +64,7 @@ export class Export {
 }
 
 export const EXPORT_KEY = Export.KEY;
-export const Serializable = Export.Serializable;
+export const Exportable = Export.Exportable;
 export const ClassValue = Export.ClassValue;
 export const ArrayValue = Export.ArrayValue;
 export const Value = Export.Value;

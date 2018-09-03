@@ -1,8 +1,8 @@
 import {Column, Table} from "../src/lightorm/decorator";
-import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator";
+import {CustomValue, DateValue, Exportable, Value} from "../src/export/decorator";
 import {Exporter} from "../src/export/Exporter";
 
-@Table('users') @Serializable()
+@Table('users') @Exportable()
 class User {
 
     @Column() @Value()
