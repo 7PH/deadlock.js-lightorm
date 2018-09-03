@@ -1,39 +1,27 @@
-import {exportable, Exportable, importable, Importable} from "../src";
+import {Column, KEY, Table} from "../src/lightorm/decorator/LightORM";
+import {CustomValue, DateValue, Serializable, Value} from "../src/export/decorator";
 
-@Importable("users")
-class User extends Exportable {
+@Table('users') @Serializable()
+class User {
 
-    @exportable()
-    @importable({primary: true})
-    public id: number;
+    @Column() @Value()
+    public id!: number;
 
-    @exportable()
-    @importable('email')
-    public email: string;
+    @Column() @Value()
+    public email!: string;
 
-    @importable('password')
+    @Column()
     public password?: string;
 
-    @importable('date_inscription')
-    public dateInscription?: number;
+    @Column('added_date') @DateValue()
+    public addedDate!: Date;
+
+    @Column('card') @CustomValue<string, string>(
+        card => '*'.repeat(card.length - 4) + card.substr(-4),
+        data => data
+    )
+    public card!: string;
 }
 
-console.log("class", User);
 
-let user1: User = new User();
-user1.id = 12;
-user1.email = 'foo@bar.yea';
-user1.password = 'olelo';
-user1.dateInscription = Date.now() / 1000;
-
-console.log('user1', user1);
-// User { id: 12, email: 'foo@bar.yea', password: 'olelo' }
-console.log('user1 exported', user1.export());
-// { id: 12, email: 'foo@bar.yea' }
-
-let user2: User = new User(user1.export());
-
-console.log('user2 imported from user1', user2);
-// User { id: 12, email: 'foo@bar.yea' }
-console.log('user2 exported', user2.export());
-// { id: 12, email: 'foo@bar.yea' }
+console.log(Reflect.getMetadata(KEY, User).getAllColumns());

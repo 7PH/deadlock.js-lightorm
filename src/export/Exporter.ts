@@ -1,0 +1,61 @@
+import {ClassMeta} from "./metadata/class/ClassMeta";
+import {KEY} from "./decorator";
+
+export class Exporter {
+
+    public static export(obj: any): any {
+
+        let metadata: any = Reflect.getMetadata(KEY, obj.constructor);
+        if (! metadata || ! (metadata instanceof ClassMeta))
+            throw new Error("Unable to export non-serialy object");
+
+        if (! metadata.hasClassDecorator)
+            throw new Error("The class decorator is missing on " + obj.constructor);
+
+        let data: any = {};
+
+        let fields = metadata.getAllFields();
+        for (let propertyMeta of fields) {
+
+            let field: string = propertyMeta.prop;
+
+            if (! obj.hasOwnProperty(field))
+                throw new Error("Field " + field + " is not on object");
+
+            // here is should be possible to use custom types for custom serialization
+            data[field] = propertyMeta.export(obj[field]);
+        }
+
+        return data;
+    }
+
+    /**
+     *
+     * @param Obj
+     * @param data
+     */
+    public static import<T>(Obj: new () => T, data: any): T {
+
+        let rawObject: Object = typeof data === 'string' ? JSON.parse(data) : data;
+
+        let metadata: ClassMeta | undefined = ClassMeta.initClassMeta(Obj);
+
+        if (! metadata.hasClassDecorator)
+            throw new Error("The class decorator is missing on " + Obj);
+
+        let importedValues: any = {};
+        let fields = metadata.getAllFields();
+        for (let propertyMeta of fields) {
+
+            let field: string = propertyMeta.prop;
+
+            if (! rawObject.hasOwnProperty(field))
+                throw new Error("Importing from object which does not have all the required properties (" + field + ")");
+
+            importedValues[field] = propertyMeta.import((rawObject as any)[field]);
+        }
+
+        return Object.assign(new Obj(), importedValues);
+    }
+
+}
