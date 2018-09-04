@@ -116,7 +116,13 @@ export class MySQL {
         const rows: any[] = await MySQL.awaitQuery(mysql as any, query, data);
 
         // construct object from rows..
-        return rows.map(row => Object.assign(new Construct(), row));
+        return rows.map((row: any) => {
+            let o = new Construct();
+            for (let i in row)
+                if (row[i] !== null)
+                    (o as any)[i] = row[i];
+            return o;
+        });
     }
 
     public static async fetchByIds<Class>(mysql: Connection, Obj: new() => Class, ids: number[]): Promise<Class[]> {
