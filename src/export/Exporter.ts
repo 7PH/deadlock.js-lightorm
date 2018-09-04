@@ -20,8 +20,10 @@ export class Exporter {
             let field: string = propertyMeta.prop;
 
             if (! obj.hasOwnProperty(field))
-                continue;
-                // throw new Error("Field " + field + " is not on object");
+                if (propertyMeta.optional)
+                    continue;
+                else
+                    throw new Error("Field " + field + " is not on object");
 
             // here is should be possible to use custom types for custom serialization
             data[field] = propertyMeta.export(obj[field]);
@@ -51,8 +53,10 @@ export class Exporter {
             let field: string = propertyMeta.prop;
 
             if (! rawObject.hasOwnProperty(field))
-                continue;
-                // throw new Error("Importing from object which does not have all the required properties (" + field + ")");
+                if (propertyMeta.optional)
+                    continue;
+                else
+                    throw new Error("Importing from object which does not have all the required properties (" + field + ")");
 
             importedValues[field] = propertyMeta.import((rawObject as any)[field]);
         }

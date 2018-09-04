@@ -15,11 +15,19 @@ export class LightORM {
         }
     }
 
-    public static Column(name?: string) {
+    public static Column(data?: string | boolean | Partial<{primary: boolean, name: string}>) {
         return function decorator(instance: any, prop: string): void {
 
+            let opt: {name: string, primary: boolean};
+            if (typeof data === "string")
+                opt = {name: data, primary: false};
+            else if (typeof data === "boolean")
+                opt = {name: prop, primary: data};
+            else
+                opt = Object.assign({name: prop, primary: false}, data);
+
             const tableMeta = TableMeta.initTableMeta(instance.constructor);
-            tableMeta.columns.push(new ColumnMeta(prop, name || prop));
+            tableMeta.columns.push(new ColumnMeta(prop, opt.name, opt.primary));
         }
     }
 }

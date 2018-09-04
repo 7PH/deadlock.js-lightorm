@@ -1,6 +1,6 @@
 {
     "name": "deadlockjs-lightorm",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "Light ORM for deadlock.js",
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts",

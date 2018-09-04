@@ -3,6 +3,8 @@ export abstract class PropertyMeta<U, T> {
 
     public readonly prop: string;
 
+    public optional: boolean = false;
+
     constructor(prop: string) {
 
         this.prop = prop;

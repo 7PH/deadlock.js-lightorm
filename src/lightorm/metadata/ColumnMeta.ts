@@ -9,9 +9,10 @@ export class ColumnMeta {
 
     public column: string;
 
-    constructor(prop: string, column: string) {
+    constructor(prop: string, column: string, primary?: boolean) {
 
         this.prop = prop;
         this.column = column;
+        this.primary = !! primary;
     }
 }

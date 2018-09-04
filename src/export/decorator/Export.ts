@@ -5,7 +5,7 @@ import {
     ClassPropertyMeta,
     CustomPropertyMeta,
     DatePropertyMeta,
-    PrimitivePropertyMeta
+    PrimitivePropertyMeta, PropertyMeta
 } from "../metadata/property";
 
 
@@ -61,6 +61,17 @@ export class Export {
         }
     }
 
+    public static Optional() {
+        return function decorator(instance: any, prop: string): void {
+
+            const classMeta = ClassMeta.initClassMeta(instance.constructor);
+            const propMeta: PropertyMeta<any, any> | undefined = classMeta.fields.find(propMeta => propMeta.prop === prop);
+            if (typeof propMeta === "undefined")
+                throw new Error("@Optional decorator should be placed before the @Value decorator");
+
+            propMeta.optional = true;
+        }
+    }
 }
 
 export const EXPORT_KEY = Export.KEY;
@@ -70,3 +81,4 @@ export const ArrayValue = Export.ArrayValue;
 export const Value = Export.Value;
 export const DateValue = Export.DateValue;
 export const CustomValue = Export.CustomValue;
+export const Optional = Export.Optional;
