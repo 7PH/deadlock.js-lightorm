@@ -15,7 +15,7 @@ export class LightORM {
         }
     }
 
-    public static Column(data?: string | boolean | Partial<{primary: boolean, name: string}>) {
+    public static Column(data?: string | boolean | Partial<{primary: boolean, name: string}>, defaultValue?: any) {
         return function decorator(instance: any, prop: string): void {
 
             let opt: {name: string, primary: boolean};
@@ -27,7 +27,7 @@ export class LightORM {
                 opt = Object.assign({name: prop, primary: false}, data);
 
             const tableMeta = TableMeta.initTableMeta(instance.constructor);
-            tableMeta.columns.push(new ColumnMeta(prop, opt.name, opt.primary));
+            tableMeta.columns.push(new ColumnMeta(prop, opt.name, opt.primary, defaultValue));
         }
     }
 }

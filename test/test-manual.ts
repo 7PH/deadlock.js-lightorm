@@ -65,10 +65,12 @@ class User {
     @Column()
     public password?: string;
 
-    @Column('added_date') @DateValue()
+    @Column('added_date')
+    @DateValue()
     public addedDate!: Date;
 
-    @Column('card') @Optional() @CustomValue<string, string>(
+    @Column('card', '')
+    @Optional() @CustomValue<string, string>(
         card => '*'.repeat(card.length - 4) + card.substr(-4),
         data => data
     )
