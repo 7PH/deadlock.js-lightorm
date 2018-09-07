@@ -37,11 +37,11 @@ export class TableMeta {
     getAllColumns(): ColumnMeta[] {
         let columns: ColumnMeta[] = [];
 
-        // parent columns
+        // parent fieldsMeta
         if (this.parent)
             columns = columns.concat(this.parent.getAllColumns());
 
-        // own columns
+        // own fieldsMeta
         columns = columns.concat(this.columns);
 
         return columns;

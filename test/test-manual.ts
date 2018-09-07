@@ -42,7 +42,7 @@ Export:
             exportFun: takes the value and export it
             importFun: takes the exported data and build back the object
 
-    @ClassValue<T>(Obj: new() => T)
+    @ClassValue<U>(Obj: new() => U)
         -> export a child which is also decorated with @Exportable
         -> params:
             Obj: a constructor in order to build the instance from the data
@@ -65,7 +65,7 @@ class User {
     @Column()
     public password?: string;
 
-    @Column('added_date')
+    @Column('added_date', () => new Date())
     @DateValue()
     public addedDate!: Date;
 

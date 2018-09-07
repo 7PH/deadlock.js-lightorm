@@ -152,7 +152,10 @@ export class MySQL {
                 if (column.primary)
                     return;
 
-                let value: any = (<any>instance)[column.prop] || column.defaultValue;
+                let value: any = (<any>instance)[column.prop];
+                if (typeof value === "undefined")
+                    value = typeof column.defaultValue === "function" ? column.defaultValue() : column.defaultValue;
+
                 if (typeof value === 'undefined')
                     throw new Error(`The property ${column.prop} should exist on object ${instance.constructor}`);
 
