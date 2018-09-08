@@ -66,6 +66,8 @@ export class FieldMeta {
 
         this.property = property;
 
+        this.fieldName = property;
+
         if (keywords)
             for (let keyword of keywords)
                 this.aggregate(keyword);

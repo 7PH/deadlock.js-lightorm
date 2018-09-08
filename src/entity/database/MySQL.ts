@@ -1,5 +1,5 @@
 import {Connection, MysqlError} from "mysql";
-import {TableMeta} from "../metadata";
+import {EntityMeta, FieldMeta} from "../metadata";
 
 
 export class MySQL {
@@ -103,26 +103,43 @@ export class MySQL {
         data?: Array<any>
     ): Promise<Class[]> {
 
-        let tableMeta: TableMeta | undefined = TableMeta.getTableMeta(Construct);
-        if (typeof tableMeta === 'undefined')
-            throw new Error("Object is not decorated with Table/Column");
+        let entityMeta: EntityMeta | undefined = EntityMeta.get(Construct);
+        if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
+            throw new Error("Object is not decorated properly");
 
         // construct sql request
-        const columns = tableMeta.getAllColumns();
-        const fields: string[] = columns.map(col => `\`${(tableMeta as any).table}\`.\`${col.column}\` as \`${col.prop}\``);
-        const query: string = `SELECT ${fields.join(',')} FROM ${tableMeta.table} ${rqt || ''}`;
+        const fieldsMeta = entityMeta.getAll();
+        const propFieldsMeta: {[prop: string]: FieldMeta} = {};
+        const fields: string[] = [];
+        for (let fieldMeta of fieldsMeta) {
+            propFieldsMeta[fieldMeta.property] = fieldMeta;
+            fields.push(`\`${(entityMeta as any).table}\`.\`${fieldMeta.fieldName}\` as \`${fieldMeta.property}\``);
+        }
+        const query: string = `SELECT ${fields.join(',')} FROM ${entityMeta.table} ${rqt || ''}`;
 
         // get rows
         const rows: any[] = await MySQL.awaitQuery(mysql as any, query, data);
 
         // construct object from rows..
-        return rows.map((row: any) => {
-            let o = new Construct();
-            for (let i in row)
-                if (row[i] !== null)
-                    (o as any)[i] = row[i];
-            return o;
-        });
+        const objects: Class[] = [];
+        for (const row of rows) {
+            let object = new Construct();
+
+            for (const column in row) {
+                switch (propFieldsMeta[column].type) {
+
+                    case "date":
+                        (object as any)[column] = new Date(row[column]);
+                        break;
+
+                    default:
+                        (object as any)[column] = row[column];
+                        break;
+                }
+            }
+            objects.push(object);
+        }
+        return objects;
     }
 
     public static async fetchByIds<Class>(mysql: Connection, Obj: new() => Class, ids: number[]): Promise<Class[]> {
@@ -141,31 +158,42 @@ export class MySQL {
      */
     public static insertEntity<Class>(mysql: Connection, instance: Class): Promise<number> {
 
-        let tableMeta: TableMeta | undefined = TableMeta.getTableMeta(instance.constructor);
-        if (typeof tableMeta === 'undefined')
-            throw new Error("Object is not decorated with Table/Column");
+        let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
+        if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
+            throw new Error("Object is not decorated properly");
 
         let entries: string[] = [];
         let fields: string[] = [];
-        tableMeta.getAllColumns()
-            .forEach(column => {
-                if (column.primary)
+        entityMeta.getAll()
+            .forEach(fieldMeta => {
+                if (fieldMeta.primary)
                     return;
 
-                let value: any = (<any>instance)[column.prop];
-                if (typeof value === "undefined")
-                    value = typeof column.defaultValue === "function" ? column.defaultValue() : column.defaultValue;
+                let value: any = (<any>instance)[fieldMeta.property];
+                if ((value === null || typeof value === "undefined") && ! fieldMeta.optional)
+                    throw new Error("Trying to insert non-optional yet undefined or null value " + fieldMeta.property);
 
-                if (typeof value === 'undefined')
-                    throw new Error(`The property ${column.prop} should exist on object ${instance.constructor}`);
+                if (value === null || typeof value === "undefined")
+                    return;
 
-                entries.push(value.toString());
-                fields.push(column.column);
+                switch (fieldMeta.type) {
+                    case "date":
+                        entries.push(value.getTime());
+                        break;
+
+                    case "primitive":
+                        entries.push(value.toString());
+                        break;
+
+                    default:
+                        throw new Error("Unable to push " + fieldMeta.property + " in database of type " + fieldMeta.type);
+                }
+                fields.push(fieldMeta.fieldName);
             });
 
         let fieldsQuery: string = fields.map(field => `\`${field}\``).join(',');
         let questionMarks: string = fields.map(() => '?').join(',');
-        let rqt: string = `INSERT INTO ${tableMeta.table} (${fieldsQuery}) VALUES (${questionMarks})`;
+        let rqt: string = `INSERT INTO ${entityMeta.table} (${fieldsQuery}) VALUES (${questionMarks})`;
 
         return MySQL.insert(mysql, rqt, entries);
     }

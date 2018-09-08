@@ -1,2 +1,1 @@
-export * from './export';
-export * from './lightorm';
+export * from './entity';
