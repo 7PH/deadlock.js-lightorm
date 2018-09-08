@@ -20,7 +20,7 @@ class User {
     public card?: string;
 }
 
-describe('export', function() {
+describe('Exporter', function() {
 
     beforeEach(function() {
 
@@ -48,28 +48,46 @@ describe('export', function() {
             this.exported = Exporter.export(this.user1);
         });
 
-        it('should not export private properties', function(done) {
-            if ("password" in this.exported || "card" in this.exported)
-                throw new Error("Private field should not be exported");
-            done();
+        describe('public/private', function() {
+
+            it('should not export private properties', function(done) {
+                if ("password" in this.exported || "card" in this.exported)
+                    throw new Error("Private field should not be exported");
+                done();
+            });
+
+            it('should export public properties', function(done) {
+                ['id', 'email', 'addedDate'].forEach(
+                    field => {
+                        if (! (field in this.exported))
+                            throw new Error("Field " + field + " was expected");
+                    }
+                );
+                done();
+            });
         });
 
-        it('should export public properties', function(done) {
-            ['id', 'email', 'addedDate'].forEach(
-                field => {
-                    if (! (field in this.exported))
-                        throw new Error("Field " + field + " was expected");
-                }
-            );
-            done();
+        describe('date', function() {
+
+            it('should export date as timestamps', function(done) {
+                if (! ("addedDate" in this.exported))
+                    throw new Error("Date should be present in exported object");
+                if (typeof this.exported['addedDate'] !== "number")
+                    throw new Error("Date should be exported as number");
+                done();
+            });
         });
 
-        it('should export date as timestamps', function(done) {
-            if (! ("addedDate" in this.exported))
-                throw new Error("Date should be present in exported object");
-            if (typeof this.exported['addedDate'] !== "number")
-                throw new Error("Date should be exported as number");
-            done();
+        describe('recursion', function() {
+            // @TODO
+        });
+
+        describe('array', function() {
+            // @TODO
+        });
+
+        describe('custom', function() {
+            // @TODO
         });
     });
 
@@ -80,7 +98,7 @@ describe('export', function() {
             this.imported = Exporter.import(User, this.exported);
         });
 
-        it('should be an instance of the class', function(done) {
+        it('should be an instance of the given class', function(done) {
             if (! (this.imported instanceof User))
                 throw new Error("Imported data should be an instance of the constructor");
             done();
