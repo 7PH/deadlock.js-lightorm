@@ -67,7 +67,7 @@ export class Exporter {
 
     public static replacer(key: string, value: any) {
 
-        if (typeof value !== 'object')
+        if (typeof value !== 'object' || value === null)
             return value;
 
         let meta = EntityMeta.get(value.constructor);
