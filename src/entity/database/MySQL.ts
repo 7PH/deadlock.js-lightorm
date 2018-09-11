@@ -178,7 +178,7 @@ export class MySQL {
 
                 switch (fieldMeta.type) {
                     case "date":
-                        entries.push(value.getTime());
+                        entries.push(value.toISOString().slice(0, 19).replace('T', ' '));
                         break;
 
                     case "primitive":
