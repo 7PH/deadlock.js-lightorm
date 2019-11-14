@@ -197,4 +197,25 @@ export class MySQL {
 
         return MySQL.insert(mysql, rqt, entries);
     }
+
+    /**
+     *
+     * @param {Connection} mysql
+     * @param instance
+     * @returns {Promise<void>}
+     */
+    public static async deleteEntity<Class>(mysql: Connection, instance: Class): Promise<void> {
+
+        let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
+        if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
+            throw new Error("Object is not decorated properly");
+
+        let primary = entityMeta.getAll().find(fieldMeta => fieldMeta.primary);
+        if (typeof primary === "undefined")
+            throw new Error("Unable to find a primary key on " + instance.constructor);
+
+        let rqt: string = `DELETE FROM \`${entityMeta.table}\` WHERE \`${primary.fieldName}\`=?`;
+        let entries: string[] = [(instance as any)[primary.property]];
+        await MySQL.awaitQuery(mysql, rqt, entries);
+    }
 }
