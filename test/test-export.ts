@@ -106,7 +106,6 @@ describe('Exporter', function() {
     });
 });
 
-/*
 let user1 = new User();
 user1.id = 12;
 user1.email = 'foo@bar.fr';
@@ -128,5 +127,5 @@ console.log(Exporter.import(User, JSON.parse(exported)));
 console.log("=====");
 // MySQL.deleteEntity(null as any, user1);
 // MySQL.fetch(null, User);
-// MySQL.insertEntity(null as any, u2);
-*/
+// MySQL.insertEntity(null as any, user2);
+// MySQL.syncEntity(null as any, user1);

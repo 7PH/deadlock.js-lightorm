@@ -204,6 +204,37 @@ export class MySQL {
      * @param instance
      * @returns {Promise<void>}
      */
+    public static async syncEntity<Class>(mysql: Connection, instance: Class): Promise<void> {
+
+        let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
+        if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
+            throw new Error("Object is not decorated properly");
+
+        // For an entity to be synced, it needs to have a primary key
+        let primary = entityMeta.getAll().find(fieldMeta => fieldMeta.primary);
+        if (typeof primary === "undefined")
+            throw new Error("Unable to find a primary key on " + instance.constructor);
+
+
+        let nonPrimary = entityMeta.getAll().filter(fieldMeta => ! fieldMeta.primary);
+        if (nonPrimary.length === 0) {
+            return;
+        }
+
+        let entryFields = nonPrimary.map(fieldMeta => `\`${fieldMeta.fieldName}\`=?`).join(',');
+        let rqt: string = `UPDATE \`${entityMeta.table}\` SET ${entryFields} WHERE \`${primary.fieldName}\`=?`;
+        let entries = nonPrimary.map(fieldMeta => ((instance as any)[fieldMeta.property]));
+        // Add the primary column value (where clause)
+        entries.push((instance as any)[primary.property]);
+        await MySQL.awaitQuery(mysql, rqt, entries);
+    }
+
+    /**
+     *
+     * @param {Connection} mysql
+     * @param instance
+     * @returns {Promise<void>}
+     */
     public static async deleteEntity<Class>(mysql: Connection, instance: Class): Promise<void> {
 
         let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
