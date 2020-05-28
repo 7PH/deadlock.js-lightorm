@@ -1,28 +1,12 @@
-import * as mysql from "mysql"
+import * as mysql from "mysql";
 import {Exporter, MySQL} from "../src/entity";
 import {User} from "./model";
+import {should, expect, assert} from "chai";
 
 
 describe('Exporter', function() {
 
     beforeEach(function(done) {
-
-        let user1 = new User();
-        user1.id = 12;
-        user1.email = 'foo@bar.fr';
-        user1.password = 'prout';
-        user1.addedDate = new Date();
-        user1.card = '0000 0000 0000 0000';
-
-        let user2 = new User();
-        user2.id = 12;
-        user2.email = 'foo@bar.fr';
-        user2.password = 'prout';
-        user2.addedDate = new Date();
-
-        this.user1 = user1;
-        this.user2 = user2;
-        this.userList = [user1, user2];
 
         const connection = mysql.createConnection({
             host: 'mysql',
@@ -31,13 +15,19 @@ describe('Exporter', function() {
             user: 'mysql',
             password: 'mysql'
         });
+        this.connection = connection;
         connection.connect((err => {
             if (err) {
                 done(err);
                 return;
             }
-            this.connection = connection;
-            done();
+            connection.query('truncate users', err => {
+                if (err) {
+                    done(err);
+                    return;
+                }
+                done();
+            });
         }));
     });
 
@@ -48,14 +38,80 @@ describe('Exporter', function() {
     });
 
     describe('insertEntity', function() {
-        it('should do what I say', async function() {
-            const entry: number = await MySQL.insertEntity(this.connection, this.user1);
-            console.log(entry);
+
+        it('should be able to insert a fully an entity', async function() {
+
+            // Prepare an entry that will be inserted in database
+            const insertedEntry = new User();
+            insertedEntry.email = 'foo@bar.com';
+            insertedEntry.password = 'thepassword';
+            insertedEntry.addedDate = new Date();
+            insertedEntry.card = '0000 0001 2000 0101';
+
+            // Insert it
+            const insertedId: number = await MySQL.insertEntity(this.connection, insertedEntry);
+
+            // Get it back
+            const fetchedEntry: User = await MySQL.fetchById(this.connection, User, insertedId);
+
+            // Check that the id has been set
+            expect(fetchedEntry.id).to.equal(insertedId);
+
+            // Check that the values have been kept
+            expect(fetchedEntry.email).to.equal(insertedEntry.email);
+            expect(fetchedEntry.password).to.equal(insertedEntry.password);
+            expect(fetchedEntry.addedDate.toUTCString()).to.equal(insertedEntry.addedDate.toUTCString());
+            expect(fetchedEntry.card).to.equal(insertedEntry.card);
+        });
+
+        it('should be able to insert an entity with missing optional fields', async function() {
+
+            // Prepare an entry that will be inserted in database
+            const insertedEntry = new User();
+            insertedEntry.email = 'foo@bar.com';
+            insertedEntry.password = 'thepassword';
+            insertedEntry.addedDate = new Date();
+
+            // Insert it
+            const insertedId: number = await MySQL.insertEntity(this.connection, insertedEntry);
+
+            // Get it back
+            const fetchedEntry: User = await MySQL.fetchById(this.connection, User, insertedId);
+
+            // Check that the id has been set
+            expect(fetchedEntry.id).to.equal(insertedId);
+
+            // Check that the values have been kept
+            expect(fetchedEntry.email).to.equal(insertedEntry.email);
+            expect(fetchedEntry.password).to.equal(insertedEntry.password);
+            expect(fetchedEntry.addedDate.toUTCString()).to.equal(insertedEntry.addedDate.toUTCString());
+            expect(fetchedEntry.card).to.equal(null);
+        });
+    });
+
+    describe('syncEntity', function() {
+
+        it('synchronize a previously inserted entity', async function() {
+
+            // Prepare an entry that will be inserted in database
+            const entry = new User();
+            entry.email = 'foo@bar.com';
+            entry.password = 'thepassword';
+            entry.addedDate = new Date();
+            entry.card = '0000 0000 0000 0000';
+
+            // Insert it
+            const insertedId: number = await MySQL.insertEntity(this.connection, entry);
+
+            // Update it
+            entry.card = '1111 1111 1111 1111';
+            await MySQL.syncEntity(this.connection, entry);
+
+            // Fetch it
+            const fetchedEntry1 = await MySQL.fetchById(this.connection, User, insertedId);
+
+            // Check that the card is the new one
+            expect(fetchedEntry1.card).to.equal(entry.card);
         });
     });
 });
-
-// MySQL.deleteEntity(null as any, user1);
-// MySQL.fetch(null, User);
-// MySQL.insertEntity(null as any, user2);
-// MySQL.syncEntity(null as any, user1);

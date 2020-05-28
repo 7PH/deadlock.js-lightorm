@@ -1,4 +1,4 @@
-import {Entity, Exporter, Field, MySQL} from "../src/entity";
+import {Entity, Field} from "../src/entity";
 
 
 @Entity("table 'users'")
