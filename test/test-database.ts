@@ -1,10 +1,10 @@
 import * as mysql from "mysql";
-import {Exporter, MySQL} from "../src/entity";
+import {MySQL} from "../src/entity";
 import {User} from "./model";
 import {should, expect, assert} from "chai";
 
 
-describe('Exporter', function() {
+describe('MySQL', function() {
 
     beforeEach(function(done) {
 
@@ -97,21 +97,23 @@ describe('Exporter', function() {
             const entry = new User();
             entry.email = 'foo@bar.com';
             entry.password = 'thepassword';
-            entry.addedDate = new Date();
+            entry.addedDate = new Date(Date.parse('04 Dec 1995 00:12:00 GMT'));
             entry.card = '0000 0000 0000 0000';
 
             // Insert it
             const insertedId: number = await MySQL.insertEntity(this.connection, entry);
 
             // Update it
+            entry.addedDate = new Date(entry.addedDate.getTime() + 100 * 60 * 1000);
             entry.card = '1111 1111 1111 1111';
             await MySQL.syncEntity(this.connection, entry);
 
             // Fetch it
-            const fetchedEntry1 = await MySQL.fetchById(this.connection, User, insertedId);
+            const fetchedEntry = await MySQL.fetchById(this.connection, User, insertedId);
 
             // Check that the card is the new one
-            expect(fetchedEntry1.card).to.equal(entry.card);
+            expect(fetchedEntry.card).to.equal(entry.card);
+            expect(fetchedEntry.addedDate.toUTCString()).to.equal(entry.addedDate.toUTCString());
         });
     });
 });

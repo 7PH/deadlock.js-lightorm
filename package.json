@@ -9,7 +9,8 @@
         "build": "npm run clean; tsc;",
         "test": "npm run test:export",
         "test:export": "npm run build && mocha build/test/test-export.js",
-        "test:database": "npm run build && mocha build/test/test-database.js"
+        "test:database": "npm run build && mocha build/test/test-database.js",
+        "docker:test": "bash scripts/docker-test.sh"
     },
     "repository": {
         "type": "git",
