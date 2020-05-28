@@ -7,7 +7,10 @@
     "scripts": {
         "clean": "rm -rf ./build/*",
         "build": "npm run clean; tsc;",
-        "test": "npm run build; mocha build/test/test*.js"
+        "test": "npm run test:export",
+        "test:export": "npm run build && mocha build/test/test-export.js",
+        "test:database": "npm run build && mocha build/test/test-database.js",
+        "docker:test": "bash scripts/docker-test.sh"
     },
     "repository": {
         "type": "git",
@@ -28,11 +31,15 @@
     },
     "homepage": "https://github.com/7PH/deadlock.js#readme",
     "dependencies": {
-        "reflect-metadata": "^0.1.12"
+        "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {
-        "@types/mocha": "^5.2.5",
-        "@types/mysql": "^2.15.5",
-        "mocha": "^5.2.0"
+        "@types/chai": "^4.2.11",
+        "@types/mocha": "^5.2.7",
+        "@types/mysql": "^2.15.13",
+        "@types/node": "^14.0.5",
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0",
+        "mysql": "^2.18.1"
     }
 }

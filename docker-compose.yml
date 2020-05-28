@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  app:
+    build: .
+    links:
+    - mysql
+    depends_on:
+    - mysql
+
+  mysql:
+    build: ./services/mysql
