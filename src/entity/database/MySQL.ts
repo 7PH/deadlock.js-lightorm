@@ -156,7 +156,7 @@ export class MySQL {
      * @param instance
      * @returns {Promise<void>}
      */
-    public static insertEntity<Class>(mysql: Connection, instance: Class): Promise<number> {
+    public static insertEntity<Class extends Object>(mysql: Connection, instance: Class): Promise<number> {
 
         let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
         if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
@@ -204,7 +204,7 @@ export class MySQL {
      * @param instance
      * @returns {Promise<void>}
      */
-    public static async syncEntity<Class>(mysql: Connection, instance: Class): Promise<void> {
+    public static async syncEntity<Class extends Object>(mysql: Connection, instance: Class): Promise<void> {
 
         let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
         if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)
@@ -235,7 +235,7 @@ export class MySQL {
      * @param instance
      * @returns {Promise<void>}
      */
-    public static async deleteEntity<Class>(mysql: Connection, instance: Class): Promise<void> {
+    public static async deleteEntity<Class extends Object>(mysql: Connection, instance: Class): Promise<void> {
 
         let entityMeta: EntityMeta | undefined = EntityMeta.get(instance.constructor);
         if (typeof entityMeta === 'undefined' || ! entityMeta.isStored)

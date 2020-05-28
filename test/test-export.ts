@@ -1,24 +1,5 @@
-import {Entity, Exporter, Field, MySQL} from "../src/entity";
-
-
-@Entity("table 'users'")
-class User {
-
-    @Field("primary column")
-    public id!: number;
-
-    @Field("column")
-    public email!: string;
-
-    @Field("private optional column")
-    public password?: string;
-
-    @Field("date column 'added_date'")
-    public addedDate!: Date;
-
-    @Field("private optional column")
-    public card?: string;
-}
+import {User} from "./model";
+import {Exporter} from "../src/entity/exporter";
 
 describe('Exporter', function() {
 
@@ -105,27 +86,3 @@ describe('Exporter', function() {
         });
     });
 });
-
-let user1 = new User();
-user1.id = 12;
-user1.email = 'foo@bar.fr';
-user1.password = 'prout';
-user1.addedDate = new Date();
-user1.card = '0000 0000 0000 0000';
-
-let user2 = new User();
-user2.id = 12;
-user2.email = 'foo@bar.fr';
-user2.password = 'prout';
-user2.addedDate = new Date();
-
-let stringified = JSON.stringify(user1);
-let exported = JSON.stringify(user1, Exporter.replacer);
-console.log(stringified);
-console.log(exported);
-console.log(Exporter.import(User, JSON.parse(exported)));
-console.log("=====");
-// MySQL.deleteEntity(null as any, user1);
-// MySQL.fetch(null, User);
-// MySQL.insertEntity(null as any, user2);
-// MySQL.syncEntity(null as any, user1);
